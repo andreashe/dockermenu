@@ -623,7 +623,8 @@ sub rebuildDockerCompose{
    
     # this is a hack as docker-compose requires quotes around the ports
     my $text = $yaml_obj->write_string($composefile);
-    $text =~ s/(\d{2,4}:\d{2,4})/\"$1\"/gs;
+    $text =~ s/(\d{2,5}:\d{2,5})/\"$1\"/gs;
+
     write_file($composefile, $text);
 }
 
@@ -690,7 +691,7 @@ sub updateComposeImageStrings{
    
     # this is a hack as docker-compose requires quotes around the ports
     my $text = $yaml_obj->write_string($composefile);
-    $text =~ s/(\d{2,4}:\d{2,4})/\"$1\"/gs;
+    $text =~ s/(\d{2,5}:\d{2,5})/\"$1\"/gs;
     write_file($composefile, $text);
 }
 
