@@ -155,7 +155,8 @@ my $menu =  {
                               selection => 'current_project'
                             },
 
-                            { type => 'exec', key => 's', title => 'start container (inc build, force-recreate)', exec => \&startContainer },
+                            { type => 'exec', key => 's', title => 'start container', exec => \&startContainer },
+                            { type => 'exec', key => 'c', title => 'start container (inc build, force-recreate)', exec => \&startContainerRecreate },
                             { type => 'exec', key => 'o', title => 'stop  container', exec => \&stopContainer },
                             { type => 'exec', key => 'b', title => 'build container', exec => \&buildContainer },
 
@@ -421,7 +422,8 @@ sub runCmd{
 
 
 # Starts docker-compose of selected project
-# docker-compose up --build --force-recreate
+# does not build a new image but changes will
+# not be added
 sub startContainer{
     my $self = shift;
     my $path = $self->currentProjectPath();
@@ -429,9 +431,25 @@ sub startContainer{
     $self->updateComposeFile();
 
     chdir($path);
-    runCmd('docker-compose up --build --detach');
+    runCmd('docker-compose up --detach');
     #runCmd('docker-compose up --build --force-recreate --detach');
 }
+
+
+
+# Starts docker-compose of selected project
+# docker-compose up --build --force-recreate
+sub startContainerRecreate{
+    my $self = shift;
+    my $path = $self->currentProjectPath();
+
+    $self->updateComposeFile();
+
+    chdir($path);
+    #runCmd('docker-compose up --build --detach');
+    runCmd('docker-compose up --build --force-recreate --detach');
+}
+
 
 
 
@@ -443,7 +461,7 @@ sub buildContainer{
     $self->updateComposeFile();
 
     chdir($path);
-    runCmd('docker-compose build --parallel');
+    runCmd('docker-compose build --parallel');    
 }
 
 
